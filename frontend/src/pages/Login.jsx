@@ -106,7 +106,7 @@ const Login = () => {
           {/* eye button */}
           <div className="absolute -mt-7 ml-84 cursor-pointer text-gray-300" onClick={changeEyeOpen}>{eyeOpen ? < FaRegEyeSlash /> : <FaRegEye />}</div>
 
-          <Link className="text-white ml-54">Forget your password ? </Link>
+          <Link to={'/forget-password'} className="text-white text-sm ml-58">Forget your password ? </Link>
           </div>
 
           {/* Button */}
