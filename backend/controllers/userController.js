@@ -25,7 +25,7 @@ export const register = async (req, res) => {
 // Login user
 export const login = async (req, res) => {
   try {
-    console.log(req.body)
+    // console.log(req.body)
     const { accessToken, user, refreshToken } = await loginUserService(req.body);
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,

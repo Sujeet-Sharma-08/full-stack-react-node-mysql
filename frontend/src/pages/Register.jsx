@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import apiConnector from "../api/apiConnector";
-import {toast} from 'react-toastify'
+import { toast } from 'react-toastify'
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -34,13 +38,15 @@ const Register = () => {
       });
       toast.success(response.data.message);
       setFormData({
-        username:"",
-        email:"",
-        password:"",
-        mobile:""
-      }) 
+        username: "",
+        email: "",
+        password: "",
+        mobile: ""
+      })
+      navigate('/login')
+
     } catch (error) {
-      toast.error("Registration failed:", error.response?.data || error.message);
+      toast.error(error.response?.data?.error || error.message);
     }
   };
 

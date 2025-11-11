@@ -2,13 +2,42 @@ import { Link } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { useState } from "react";
 import { HiArrowLongRight } from "react-icons/hi2";
+import { FaRegUser } from "react-icons/fa6";
+import { IoLogOutOutline } from "react-icons/io5";
+import apiConnector from "../api/apiConnector";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { logoutUser } from "../redux/slices/userSlice";
+import { useSelector } from "react-redux";
+
 
 const Navbar = () => {
 
+  const token = useSelector((state)=> state.user.token)
+
+  console.log("token from navbar", token)
+
   const [visible, setVisible] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   function handleProfile() {
     setVisible(!visible);
+  }
+
+  const handleLogout = async()=>{
+    try {
+      const response = await apiConnector.post('/user/logout');
+
+      toast.success(response.data.message)
+      dispatch(logoutUser(null));
+      setVisible(false);
+      navigate('/home') 
+
+    } catch (error) {
+      toast.error(error.response.data.message || "Logout Failed!")
+    }
   }
 
   return (
@@ -71,8 +100,19 @@ const Navbar = () => {
       {
         visible && (
           <div className="absolute right-6 top-18 bg-white shadow-md rounded-sm w-28 z-50">
-            <Link onClick={() => setVisible(false)} to={'/profile'} className="block text-center py-2 hover:bg-gray-200 hover:rounded-sm">Profile</Link>
-            <Link to={'/logout'} className="block text-center py-2  hover:bg-gray-200 hover:rounded-sm">Logout</Link>
+            <Link onClick={() => setVisible(false)} to={'/profile'}  className="flex gap-2 items-center justify-center py-2 hover:bg-gray-200 hover:rounded-sm ">
+              <div>
+                < FaRegUser />
+              </div>
+              <div>
+                < div  className="block text-center">Profile</div>
+              </div>
+            </Link>
+
+            <Link onClick={handleLogout} className="flex gap-2 items-center justify-center py-2 hover:bg-gray-200 hover:rounded-sm">
+              <div><IoLogOutOutline /></div>
+              <div className="block text-center">Logout</div>
+          </Link>
           </div>
         )
       }
