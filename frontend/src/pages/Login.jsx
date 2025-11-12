@@ -52,7 +52,7 @@ const Login = () => {
         email: "",
         password: ""
       })
-      navigate('/dashboard')
+      navigate('/profile')
     } catch (error) {
        toast.error(error.response?.data?.error || error?.message);
     }

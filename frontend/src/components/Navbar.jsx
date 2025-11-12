@@ -14,9 +14,8 @@ import { useSelector } from "react-redux";
 
 const Navbar = () => {
 
-  const token = useSelector((state)=> state.user.token)
-
-  console.log("token from navbar", token)
+  const token = useSelector((state) => state.user.token)
+  // console.log("token from navbar", token)
 
   const [visible, setVisible] = useState(false);
   const dispatch = useDispatch();
@@ -26,14 +25,14 @@ const Navbar = () => {
     setVisible(!visible);
   }
 
-  const handleLogout = async()=>{
+  const handleLogout = async () => {
     try {
       const response = await apiConnector.post('/user/logout');
 
       toast.success(response.data.message)
       dispatch(logoutUser(null));
       setVisible(false);
-      navigate('/home') 
+      navigate('/')
 
     } catch (error) {
       toast.error(error.response.data.message || "Logout Failed!")
@@ -77,21 +76,24 @@ const Navbar = () => {
 
 
           <div className="flex gap-10">
-            <Link
-              to="/login"
-              className="group flex items-center justify-center gap-2 h-10 w-32 rounded-3xl bg-amber-300 text-black font-semibold transition-all duration-300 px-4"
-            >
-              <span>Sign in</span>
+            {!token &&
+              <Link
+                to="/login"
+                className="group flex items-center justify-center gap-2 h-10 w-32 rounded-3xl bg-amber-300 text-black font-semibold transition-all duration-300 px-4"
+              >
+                <span>Sign in</span>
 
-              {/* Arrow animation */}
-              <HiArrowLongRight
-                className="text-xl transform transition-all duration-300 group-hover:translate-x-1"
-              />
-            </Link>
+                {/* Arrow animation */}
+                <HiArrowLongRight
+                  className="text-xl transform transition-all duration-300 group-hover:translate-x-1"
+                />
+              </Link>
+            }
 
-            <div onClick={handleProfile} className="text-xl mt-2 cursor-pointer hover:text-yellow-400 transition duration-300">
-              <FaUser />
-            </div>
+            {token &&
+              <div onClick={handleProfile} className="text-xl mt-2 cursor-pointer hover:text-yellow-400 transition duration-300">
+                <FaUser />
+              </div>}
           </div>
         </div>
       </nav >
@@ -100,19 +102,19 @@ const Navbar = () => {
       {
         visible && (
           <div className="absolute right-6 top-18 bg-white shadow-md rounded-sm w-28 z-50">
-            <Link onClick={() => setVisible(false)} to={'/profile'}  className="flex gap-2 items-center justify-center py-2 hover:bg-gray-200 hover:rounded-sm ">
+            <Link onClick={() => setVisible(false)} to={'/profile'} className="flex gap-2 items-center justify-center py-2 hover:bg-gray-200 hover:rounded-sm ">
               <div>
                 < FaRegUser />
               </div>
               <div>
-                < div  className="block text-center">Profile</div>
+                < div className="block text-center">Profile</div>
               </div>
             </Link>
 
             <Link onClick={handleLogout} className="flex gap-2 items-center justify-center py-2 hover:bg-gray-200 hover:rounded-sm">
               <div><IoLogOutOutline /></div>
               <div className="block text-center">Logout</div>
-          </Link>
+            </Link>
           </div>
         )
       }
