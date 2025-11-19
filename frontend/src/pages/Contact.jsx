@@ -1,17 +1,30 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import apiConnector from '../api/apiConnector';
+import { toast } from 'react-toastify';
 
 const Contact = () => {
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [formData, setFormData] = useState({ fullname: '', email: '', message: '' });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    alert('Message sent successfully!');
+
+    try {
+      const { fullname, email, message} = formData;
+      const response =  await apiConnector.post('/contact/createContact',
+        {fullname, email, message},
+        {withCredentials : true}
+      )
+      toast.success(response.data.message);
+      setFormData({ fullname: '', email: '', message: '' });
+
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to send message. Please try again later.");
+    } 
   };
 
   return (
@@ -67,12 +80,12 @@ const Contact = () => {
               <label className="block text-sm font-medium text-slate-600">Full Name</label>
               <input
                 type="text"
-                name="name"
-                value={formData.name}
+                name="fullname"
+                value={formData.fullname}
                 onChange={handleChange}
                 required
-                className="w-full mt-2 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                placeholder="Your name"
+                className="w-full mt-2 px-4 py-2 border placeholder:text-gray-400 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                placeholder="full name"
               />
             </div>
 
@@ -84,7 +97,7 @@ const Contact = () => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full mt-2 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                className="w-full mt-2 px-4 py-2 border placeholder:text-gray-400 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                 placeholder="you@example.com"
               />
             </div>
@@ -97,7 +110,7 @@ const Contact = () => {
                 onChange={handleChange}
                 required
                 rows="4"
-                className="w-full mt-2 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                className="w-full mt-2 px-4 py-2 border placeholder:text-gray-400 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                 placeholder="Write your message..."
               ></textarea>
             </div>

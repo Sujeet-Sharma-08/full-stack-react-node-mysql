@@ -110,7 +110,6 @@ const Navbar = () => {
                 < div className="block text-center">Profile</div>
               </div>
             </Link>
-
             <Link onClick={handleLogout} className="flex gap-2 items-center justify-center py-2 hover:bg-gray-200 hover:rounded-sm">
               <div><IoLogOutOutline /></div>
               <div className="block text-center">Logout</div>

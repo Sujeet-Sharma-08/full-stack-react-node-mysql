@@ -2,6 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import connection from "./config/db.js";
 import userRoute from "./routes/userRoute.js";
+import contactRoute  from './routes/contactRoute.js'
+import ideaRoute from './routes/ideaRoute.js'
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -24,6 +26,8 @@ app.use(cors({
 
 // Routes
 app.use("/user", userRoute);
+app.use('/contact', contactRoute)
+app.use('/idea', ideaRoute)
 
 
 // Server Start

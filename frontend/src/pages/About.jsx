@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from 'react';
+import apiConnector from '../api/apiConnector';
+import { toast } from 'react-toastify';
 
-// AboutPage.jsx
-// Single-file React component (Tailwind CSS required in the project)
 
 const About = () => {
   const [yearsExperience, setYearsExperience] = useState(0);
   const [projectsCount, setProjectsCount] = useState(0);
   const [clientsCount, setClientsCount] = useState(0);
+
+  const [say, setSay] = useState(false);
+
+  const sayHandler = () => {
+    setSay(!say);
+  }
+
 
   useEffect(() => {
     // simple number animation
@@ -33,6 +40,27 @@ const About = () => {
     { name: 'Redux', lvl: 'Intermediate', icon: ReduxIcon() },
     { name: 'Docker', lvl: 'Beginner', icon: DockerIcon() },
   ];
+
+  const [ideaData, setIdeaData] = useState({ name: "", idea: "" })
+
+  function changeHandler(e) {
+    setIdeaData({ ...ideaData, [e.target.name]: e.target.value })
+  }
+
+  const ideaSumitHandler = async (e) => {
+    e.preventDefault();
+    try {
+      const { name, idea } = ideaData;
+      const response = await apiConnector.post('/idea/create-idea',
+        { name, idea },
+        { withCredentials: true }
+      );
+      toast.success(response.data.message);
+      setIdeaData({ name: "", idea: "" });
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to submit idea. Please try again.");
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white py-16 px-6 md:px-12 lg:px-24">
@@ -156,20 +184,45 @@ const About = () => {
           <div>
             <h3 className="text-2xl font-semibold">Let’s build something together</h3>
             <p className="mt-2 text-slate-600">I’m open to freelance gigs, internships, and collaborations. Send a quick message and I’ll reply within a day.</p>
-            <div className="mt-6">
-              <a href="mailto:your-email@example.com" className="inline-block px-5 py-3 rounded-lg bg-indigo-600 text-white font-medium shadow">Say Hello</a>
+            <div onClick={sayHandler} className="mt-6">
+              <button className="inline-block px-5 py-3 rounded-lg bg-indigo-600 text-white font-medium shadow">
+                Say Hello
+              </button>
+            </div>
+
+            <div
+              className={`flex justify-center items-center rounded-lg h-10 w-[6.7rem] bg-amber-300 text-blue-600
+    transition-all duration-500 ease-out
+    ${say ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-6"}
+  `}
+            >
+              <p>
+                Hi,<span className="animate-pulse">🖐</span>
+              </p>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-6 shadow-sm">
-            <label className="block text-sm font-medium text-slate-700">Name</label>
-            <input className="mt-2 w-full rounded-md border px-3 py-2" placeholder="Your name" />
-            <label className="block text-sm font-medium text-slate-700 mt-4">Message</label>
-            <textarea className="mt-2 w-full rounded-md border px-3 py-2" rows={4} placeholder="Hi Sujeet — I have an idea..." />
-            <div className="mt-4 flex justify-end">
-              <button className="px-4 py-2 rounded-md bg-indigo-600 text-white">Send</button>
-            </div>
-          </div>
+            <form className="bg-white rounded-xl p-6 shadow-sm">
+              <label className="block text-sm font-medium text-slate-700">Name</label>
+              <input
+                onChange={changeHandler}
+                value={ideaData.name}
+                className="mt-2 w-full rounded-md border px-3 py-2 placeholder:text-gray-400"
+                placeholder="Your name"
+                name='name'
+              />
+              <label className="block text-sm font-medium text-slate-700 mt-4">Message</label>
+              <textarea
+                onChange={changeHandler}
+                value={ideaData.idea}
+                className="mt-2 w-full rounded-md border px-3 py-2 placeholder:text-gray-400"
+                rows={4} placeholder="Have an idea? Let's discuss!"
+                name='idea'
+              />
+              <div className="mt-4 flex justify-end">
+                <button onClick={ideaSumitHandler} className="px-4 py-2 rounded-md bg-indigo-600 text-white">Send</button>
+              </div>
+            </form>
         </section>
 
         <footer className="text-sm text-slate-500 text-center mt-8">© {new Date().getFullYear()} Sujeet Kumar Sharma — Built with React & Tailwind</footer>
