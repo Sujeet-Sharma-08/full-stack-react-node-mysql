@@ -5,6 +5,7 @@ import userRoute from "./routes/userRoute.js";
 import contactRoute  from './routes/contactRoute.js'
 import ideaRoute from './routes/ideaRoute.js'
 import cookieParser from "cookie-parser";
+import otpRoute from './routes/otpRoute.js'
 import cors from "cors";
 
 dotenv.config();
@@ -14,7 +15,6 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cookieParser());
-
 
 app.use(cors({
   origin: 'http://localhost:5173',
@@ -28,6 +28,7 @@ app.use(cors({
 app.use("/user", userRoute);
 app.use('/contact', contactRoute)
 app.use('/idea', ideaRoute)
+app.use('/user/v1', otpRoute);
 
 
 // Server Start

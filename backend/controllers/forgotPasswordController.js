@@ -1,5 +1,6 @@
-import { forgotPasswordService, otpVerifyService, resetPasswordService } from "../services/otpService";
-import sendEmail from "../utils/sendEmail.js";
+import { forgotPasswordService, otpVerifyService, resetPasswordService } from "../services/otpService.js";
+import {sendEmail} from "../utils/sendEmail.js";
+
 
 export const forgotPasswordController = async (req, res) => {
     try {
@@ -8,7 +9,7 @@ export const forgotPasswordController = async (req, res) => {
         const subject = "OTP for Password Reset";
         const message = `Your OTP for password reset is ${otp}. It is valid for 10 minutes.`;
 
-        sendEmail(req.body.email, subject, message);
+        await sendEmail(req.body.email, subject, message);
 
         return res.status(200).json({
             message: "OTP sent to your email successfully",
@@ -41,7 +42,7 @@ export const otpVerifyController= async(req,res)=>{
 }
 
 
-export const resetPasswordController=async()=>{
+export const resetPasswordController = async(req,res)=>{
     try {
         const result = await resetPasswordService(req.body);
         res.status(200).json({
@@ -50,9 +51,10 @@ export const resetPasswordController=async()=>{
             data : result
         }) 
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             success:false,
             message:"internal server error!",
+            error: error.message 
         })
     }
 }
