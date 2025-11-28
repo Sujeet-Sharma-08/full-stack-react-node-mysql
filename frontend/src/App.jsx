@@ -10,6 +10,8 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Projects from './pages/Projects'
 import ProtectedRoute from './protectedRoute/ProtectedRoute'
+import ForgetPassword from './pages/ForgetPassword'
+import VerifyOtp from './pages/VerifyOtp'
 
 
 function App() {
@@ -19,8 +21,8 @@ function App() {
       <Navbar />
 
       <Routes>
-        <Route path="/" element={<Home/>} />
-        <Route path="/about" element={<About/>} />
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
@@ -33,12 +35,22 @@ function App() {
             </ProtectedRoute>
           } />
 
-         <Route path='/projects' element ={
+        <Route path='/projects' element={
           <ProtectedRoute>
-            <Projects/>
+            <Projects />
           </ProtectedRoute>
-         } />
-          
+        } />
+
+
+        <Route path='/forgot-password' 
+        element={
+            // <ProtectedRoute>
+              <ForgetPassword />
+            // </ProtectedRoute>
+            } 
+            />
+
+            <Route path='/verify-otp' element={<VerifyOtp/>}/>
       </Routes>
 
       <ToastContainer

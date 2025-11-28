@@ -35,7 +35,7 @@ const Register = () => {
         email,
         password,
         mobile
-      });
+      },{withCredentials: true});
       toast.success(response.data.message);
       setFormData({
         username: "",

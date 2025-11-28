@@ -22,31 +22,39 @@ export const forgotPasswordService = async ({ email }) => {
 }
 
 
-
 export const otpVerifyService = async ({ email, otp }) => {
+  
+    const [rows] = await connection.execute(otpModel.findOtp, [email, otp]);
+    // Check if OTP exists in DB
+    if (rows.length === 0) {
+        throw new Error("OTP not found or invalid!");
+    }
 
-    const [otpFromDB] = await connection.execute(otpModel.findOtp,[email,otp]);
+    const otpData = rows[0];
 
-    if (!otpFromDB || otpFromDB.length === 0) {
-        throw new Error("No otp in DB");
+    console.log("otpData", otpData);
+
+    // OTP match check
+    if (otpData.otp !== otp) {
+        throw new Error("Provided OTP doesn't match!");
     }
 
     const currentTime = new Date();
+    const createdAt = new Date(otpData.created_at);  // Convert string → Date object
 
-    const createdAt = otpFromDB.created_at;
+    // Time difference in minutes
+    const timeDifference =
+        (currentTime.getTime() - createdAt.getTime()) / (1000 * 60);
 
-    const timeDifference = (currentTime - createdAt) / (1000 * 60); // Convert to minutes
-    
-    if (timeDifference > 10) {
+    if (timeDifference > 2){
         throw new Error("OTP has expired");
     }
 
-   return true;
+    return true;
 };
 
 
 export const resetPasswordService = async ({ email, otp, newPassword }) => {
-
     try {
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
@@ -61,6 +69,8 @@ export const resetPasswordService = async ({ email, otp, newPassword }) => {
 
         // Delete used OTP
         await connection.execute(otpModel.deleteOtp, [email, otp]);
+        console.log("hello from reset password service", )
+
 
         return true;
 
