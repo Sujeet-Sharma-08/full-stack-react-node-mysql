@@ -5,7 +5,7 @@ import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { loginUser } from '../redux/slices/userSlice.js'
+import { loginUser, getUser } from '../redux/slices/userSlice.js'
 
 const Login = () => {
 
@@ -24,7 +24,7 @@ const Login = () => {
     password: "",
   });
 
-  const { email, password } = formData;
+  // const { email, password } = formData;
 
   const handleChange = (e) => {
     setFormData({
@@ -46,7 +46,8 @@ const Login = () => {
         { withCredentials: true });
 
       dispatch(loginUser(response.data.accessToken));
-      console.log("response.data.accessToken", response.data.accessToken)
+      dispatch(getUser(response.data.user))
+      // console.log("response.data.accessToken", response.data.accessToken)
       toast.success(response.data.message)
       setFormData({
         email: "",
@@ -82,7 +83,7 @@ const Login = () => {
               type="email"
               id="email"
               name="email"
-              value={email}
+              value={formData.email}
               onChange={handleChange}
               placeholder="Enter your email"
               className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
@@ -103,7 +104,7 @@ const Login = () => {
                 type={eyeOpen ? "password" : "text"}
                 id="password"
                 name="password"
-                value={password}
+                value={formData.password}
                 onChange={handleChange}
                 placeholder="Enter your password"
                 className="w-full px-4 py-2 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"

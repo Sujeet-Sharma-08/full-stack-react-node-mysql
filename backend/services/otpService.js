@@ -23,6 +23,9 @@ export const forgotPasswordService = async ({ email }) => {
 
 
 export const otpVerifyService = async ({ email, otp }) => {
+
+    //  console.log("email, otp from be", email, otp)
+
   
     const [rows] = await connection.execute(otpModel.findOtp, [email, otp]);
     // Check if OTP exists in DB

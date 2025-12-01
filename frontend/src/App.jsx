@@ -12,6 +12,7 @@ import Projects from './pages/Projects'
 import ProtectedRoute from './protectedRoute/ProtectedRoute'
 import ForgetPassword from './pages/ForgetPassword'
 import VerifyOtp from './pages/VerifyOtp'
+import ResetPassword from './pages/ResetPassword'
 
 
 function App() {
@@ -51,6 +52,8 @@ function App() {
             />
 
             <Route path='/verify-otp' element={<VerifyOtp/>}/>
+
+            <Route path='/reset-password' element={<ResetPassword/>}/>
       </Routes>
 
       <ToastContainer
