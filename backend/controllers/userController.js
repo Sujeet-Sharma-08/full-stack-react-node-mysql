@@ -4,7 +4,8 @@ import {
   refreshAccessTokenService,
   getAllUsersService,
   deleteUserByIdService,
-  findUserByIdService
+  findUserByIdService,
+  getCurrentUSerService
 } from "../services/userService.js";
 
 
@@ -123,3 +124,21 @@ export const deleteUser = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+
+// get current user for auto login
+export const getCurrentUserController = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const result = await getCurrentUSerService(userId); // ✅ FIXED
+
+    res.status(200).json({
+      success: true,
+      user: result
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch user" });
+  }
+};
+

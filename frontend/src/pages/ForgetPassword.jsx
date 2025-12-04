@@ -2,9 +2,14 @@ import React, { useState } from 'react';
 import apiConnector from '../api/apiConnector';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import {setForgotPasswordEmail} from '../redux/slices/userSlice.js';
+
 
 const ForgetPassword = () => {
 
+    const dispatch = useDispatch();
+    
     const navigate = useNavigate();
 
     const [emailData, setEmailData] = useState({ email: "" });
@@ -20,6 +25,8 @@ const ForgetPassword = () => {
     e.preventDefault();
 
     const { email } = emailData;
+
+    dispatch(setForgotPasswordEmail(email));
 
     // note: api hit hone se pahle email check kar len ki email empty to nahi hai so that our api call waste na jaaye
 

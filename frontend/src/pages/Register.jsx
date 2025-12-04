@@ -27,9 +27,20 @@ const Register = () => {
     e.preventDefault();
     // console.log("Form Data:", formData);
 
-    const { username, email, password, mobile } = formData;
-
     try {
+      const { username, email, password, mobile } = formData;
+
+      if(password.length <= 6 || password.length >= 12){
+        toast.error("paasword length can't be less than 6 character and more than 12")
+        return;
+      }
+
+
+      if(mobile.length < 10 || mobile.length > 10){
+        toast.error("enter a valid mobile number")
+        return;
+      }
+
       const response = await apiConnector.post("/user/register", {
         name: username,
         email,
@@ -72,6 +83,7 @@ const Register = () => {
             <input
               type="text"
               id="username"
+              required
               name="username"
               placeholder="Enter your name"
               value={formData.username}
@@ -91,6 +103,7 @@ const Register = () => {
             <input
               type="email"
               id="email"
+              required
               name="email"
               placeholder="Enter your email"
               value={formData.email}
@@ -111,6 +124,7 @@ const Register = () => {
               type="password"
               id="password"
               name="password"
+              required
               placeholder="Enter your password"
               value={formData.password}
               onChange={handleChange}
@@ -130,6 +144,7 @@ const Register = () => {
               type="text"
               id="mobile"
               name="mobile"
+              required
               placeholder="Enter your mobile number"
               value={formData.mobile}
               onChange={handleChange}

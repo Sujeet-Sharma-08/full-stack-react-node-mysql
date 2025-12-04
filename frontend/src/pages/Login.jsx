@@ -5,7 +5,7 @@ import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { loginUser, getUser } from '../redux/slices/userSlice.js'
+import { loginUser, setUserData } from '../redux/slices/userSlice.js'
 
 const Login = () => {
 
@@ -38,6 +38,7 @@ const Login = () => {
     e.preventDefault(); // prevent form reload
 
     const { email, password } = formData;
+
     try {
       const response = await apiConnector.post("/user/login", {
         email,
@@ -46,7 +47,7 @@ const Login = () => {
         { withCredentials: true });
 
       dispatch(loginUser(response.data.accessToken));
-      dispatch(getUser(response.data.user))
+      dispatch(setUserData(response.data.user))
       // console.log("response.data.accessToken", response.data.accessToken)
       toast.success(response.data.message)
       setFormData({

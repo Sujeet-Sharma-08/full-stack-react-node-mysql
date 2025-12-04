@@ -22,21 +22,16 @@ export const forgotPasswordService = async ({ email }) => {
 }
 
 
-export const otpVerifyService = async ({ email, otp }) => {
+export const otpVerifyService = async ({  resetEmail , otp }) => {
 
-    //  console.log("email, otp from be", email, otp)
-
-  
-    const [rows] = await connection.execute(otpModel.findOtp, [email, otp]);
+    const [rows] = await connection.execute(otpModel.findOtp, [resetEmail, otp]);
     // Check if OTP exists in DB
     if (rows.length === 0) {
         throw new Error("OTP not found or invalid!");
     }
 
     const otpData = rows[0];
-
-    console.log("otpData", otpData);
-
+    
     // OTP match check
     if (otpData.otp !== otp) {
         throw new Error("Provided OTP doesn't match!");
@@ -57,13 +52,13 @@ export const otpVerifyService = async ({ email, otp }) => {
 };
 
 
-export const resetPasswordService = async ({ email, otp, newPassword }) => {
+export const resetPasswordService = async ({ resetEmail, resetOtp, newPassword }) => {
     try {
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
         const [updateResult] = await connection.execute(
             'UPDATE users SET password = ? WHERE email = ?',
-            [hashedPassword, email]
+            [hashedPassword, resetEmail]
         );
 
         if (updateResult.affectedRows === 0) {
@@ -71,9 +66,8 @@ export const resetPasswordService = async ({ email, otp, newPassword }) => {
         }
 
         // Delete used OTP
-        await connection.execute(otpModel.deleteOtp, [email, otp]);
+        await connection.execute(otpModel.deleteOtp, [resetEmail, resetOtp]);
         console.log("hello from reset password service", )
-
 
         return true;
 

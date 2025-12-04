@@ -13,9 +13,32 @@ import ProtectedRoute from './protectedRoute/ProtectedRoute'
 import ForgetPassword from './pages/ForgetPassword'
 import VerifyOtp from './pages/VerifyOtp'
 import ResetPassword from './pages/ResetPassword'
+import { useDispatch } from 'react-redux'
+import { setUserData } from './redux/slices/userSlice.js'
+import { useEffect } from 'react'
+import apiConnector from './api/apiConnector.jsx'
 
 
 function App() {
+
+   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await apiConnector.get("/user/me", {
+          withCredentials: true
+        });
+
+        dispatch(setUserData(res.data.user));
+
+      } catch (error) {
+        console.log("User not logged in");
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   return (
     <div>

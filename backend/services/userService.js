@@ -1,12 +1,12 @@
 import connection from "../config/db.js";
 import { queries } from "../models/userModel.js";
 import bcrypt from "bcryptjs";
-import { generateAccessToken,generateRefreshToken} from "../utils/tokenization.js";
+import { generateAccessToken, generateRefreshToken } from "../utils/tokenization.js";
 
 // Register user
-export const createUserService = async ({ name, email, password }) => {
+export const createUserService = async ({ name, email, mobile, password }) => {
 
-  if(!name || !email || !password){
+  if (!name || !email || !mobile || !password) {
     throw new Error("All fields are required!");
   }
   const [rows] = await connection.execute(queries.findByEmail, [email]);
@@ -19,17 +19,18 @@ export const createUserService = async ({ name, email, password }) => {
   const [result] = await connection.execute(queries.createUser, [
     name,
     email,
+    mobile,
     hashedPassword,
   ]);
 
-  return { id: result.insertId, name, email };
+  return { id: result.insertId, name, email, mobile };
 };
 
 
 // Login user
 export const loginUserService = async ({ email, password }) => {
 
-   if(!email || !password){
+  if (!email || !password) {
     throw new Error("All fields are required!");
   }
 
@@ -47,11 +48,11 @@ export const loginUserService = async ({ email, password }) => {
   const accessToken = generateAccessToken(user)
   const refreshToken = generateRefreshToken(user);
 
-  return {accessToken , user, refreshToken};
+  return { accessToken, user, refreshToken };
 };
 
 // refresh token generation service
-export const refreshAccessTokenService = (refreshToken)=>{
+export const refreshAccessTokenService = (refreshToken) => {
 
   if (!refreshToken) {
     throw new Error("No refresh token provided");
@@ -78,9 +79,9 @@ export const getAllUsersService = async () => {
 
 
 // find by id
-export const findUserByIdService = async(id)=>{
+export const findUserByIdService = async ({ id }) => {
   const [rows] = await connection.execute(queries.findById, [id]);
-  if(rows.length === 0){
+  if (rows.length === 0) {
     throw new Error(`User not found with this id : ${id}`);
   }
   return rows[0];
@@ -98,3 +99,14 @@ export const deleteUserByIdService = async (id) => {
   await connection.execute(queries.deleteUserById, [id]);
   return true;
 };
+
+
+export const getCurrentUSerService = async (id) => {
+
+  const [rows] = await connection.execute(queries.findById, [id]);
+  if (rows.length === 0) {
+    throw new Error(`User not found with this id : ${id}`);
+  }
+  return rows[0];
+
+}
