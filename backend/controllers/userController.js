@@ -26,11 +26,18 @@ export const register = async (req, res) => {
 // Login user
 export const login = async (req, res) => {
   try {
-    // console.log(req.body)
     const { accessToken, user, refreshToken } = await loginUserService(req.body);
+
+    // ✅ STORE BOTH TOKENS IN COOKIE
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "Strict",
+    });
+
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: true, // set false in dev if no HTTPS
+      secure: false,
       sameSite: "Strict",
     });
 
@@ -38,7 +45,6 @@ export const login = async (req, res) => {
       success: true,
       message: "Login successful!",
       user,
-      accessToken,
     });
 
   } catch (err) {
@@ -47,14 +53,22 @@ export const login = async (req, res) => {
 };
 
 
-// refresh token 
+
+//------------ refresh token ----------------//
 export const refreshAccessToken = (req, res) => {
   try {
     const refreshToken = req.cookies.refreshToken;
 
-    const newToken = refreshAccessTokenService(refreshToken);
+    const newAccessToken = refreshAccessTokenService(refreshToken);
 
-    res.json({ accessToken: newToken });
+    // ✅ STORE NEW ACCESS TOKEN
+    res.cookie("accessToken", newAccessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "Strict",
+    });
+
+    res.json({ success: true });
 
   } catch (err) {
     res.status(403).json({ message: err.message });
@@ -62,19 +76,27 @@ export const refreshAccessToken = (req, res) => {
 };
 
 
+
 // logout user
 export const logoutUser = (req, res) => {
   res.clearCookie("refreshToken", {
     httpOnly: true,
-    secure: true,
+    secure: false,
+    sameSite: "Strict",
+  });
+
+  res.clearCookie("accessToken", {
+    httpOnly: true,
+    secure: false,
     sameSite: "Strict",
   });
 
   return res.status(200).json({
     success: true,
-    message: "user Logout successful!",
+    message: "User Logout successful!",
   });
 };
+
 
 
 // Get all users

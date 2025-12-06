@@ -8,17 +8,17 @@ import apiConnector from "../api/apiConnector";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { logoutUser } from "../redux/slices/userSlice";
 import { useSelector } from "react-redux";
+import {logoutUser} from '../redux/slices/userSlice.js'
 
 
 const Navbar = () => {
 
-  const token = useSelector((state) => state.user.token)
-  // console.log("token from navbar", token)
+  const user = useSelector((state) => state.user.userData);
+  console.log("user from navbar", user)
+  const dispatch  = useDispatch();
 
   const [visible, setVisible] = useState(false);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   function handleProfile() {
@@ -27,13 +27,12 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await apiConnector.post('/user/logout');
-
+      const response = await apiConnector.post('/user/logout', {},  { withCredentials: true });
+      console.log("dta from logout", response)
       toast.success(response.data.message)
-      dispatch(logoutUser(null));
+      dispatch(logoutUser());
       setVisible(false);
       navigate('/')
-
     } catch (error) {
       toast.error(error.response.data.message || "Logout Failed!")
     }
@@ -76,7 +75,7 @@ const Navbar = () => {
 
 
           <div className="flex gap-10">
-            {!token &&
+            { !user &&
               <Link
                 to="/login"
                 className="group flex items-center justify-center gap-2 h-10 w-32 rounded-3xl bg-amber-300 text-black font-semibold transition-all duration-300 px-4"
@@ -90,7 +89,7 @@ const Navbar = () => {
               </Link>
             }
 
-            {token &&
+            {user &&
               <div onClick={handleProfile} className="text-xl mt-2 cursor-pointer hover:text-yellow-400 transition duration-300">
                 <FaUser />
               </div>}

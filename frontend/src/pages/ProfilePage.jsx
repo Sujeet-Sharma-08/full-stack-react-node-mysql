@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { FaRegUser } from "react-icons/fa6";
 import { useSelector, useDispatch } from 'react-redux';
 import apiConnector from '../api/apiConnector';
-import { setUpdatedUserData } from '../redux/slices/userSlice.js';
 import { toast } from 'react-toastify';
 
 const ProfilePage = () => {
@@ -52,7 +51,7 @@ const ProfilePage = () => {
                     { withCredentials: true }
                 );
 
-                dispatch(setUpdatedUserData(res.data));
+                // dispatch(setUpdatedUserData(res.data));
                 toast.success(res.data.message || "Profile Updated Successfully!");
                 setIsEditing(false);
 

@@ -21,7 +21,7 @@ import apiConnector from './api/apiConnector.jsx'
 
 function App() {
 
-   const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -29,16 +29,14 @@ function App() {
         const res = await apiConnector.get("/user/me", {
           withCredentials: true
         });
-
         dispatch(setUserData(res.data.user));
-
       } catch (error) {
-        console.log("User not logged in");
+        dispatch(setUserData(null));
       }
     };
 
     fetchUser();
-  }, []);
+  }, [dispatch]);
 
   return (
     <div>
@@ -66,17 +64,12 @@ function App() {
         } />
 
 
-        <Route path='/forgot-password' 
-        element={
-            // <ProtectedRoute>
-              <ForgetPassword />
-            // </ProtectedRoute>
-            } 
-            />
+        <Route path='/forgot-password' element={ <ForgetPassword />}/>
 
-            <Route path='/verify-otp' element={<VerifyOtp/>}/>
+        <Route path='/verify-otp' element={<VerifyOtp />} />
 
-            <Route path='/reset-password' element={<ResetPassword/>}/>
+        <Route path='/reset-password' element={<ResetPassword />} />
+
       </Routes>
 
       <ToastContainer

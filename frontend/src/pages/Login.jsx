@@ -5,7 +5,7 @@ import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { loginUser, setUserData } from '../redux/slices/userSlice.js'
+import { setUserData } from '../redux/slices/userSlice.js'
 
 const Login = () => {
 
@@ -46,14 +46,15 @@ const Login = () => {
       },
         { withCredentials: true });
 
-      dispatch(loginUser(response.data.accessToken));
+        console.log("printing res from logged in", response)
+      
       dispatch(setUserData(response.data.user))
-      // console.log("response.data.accessToken", response.data.accessToken)
       toast.success(response.data.message)
       setFormData({
         email: "",
         password: ""
       })
+
       navigate('/profile')
     } catch (error) {
        toast.error(error.response?.data?.error || error?.message);

@@ -3,22 +3,20 @@ import { createSlice } from '@reduxjs/toolkit';
 const userSlice = createSlice({
     name: "user",
     initialState: {
-        token: null,
         userData : null,
+        isAuthLoading: true,
         forgotPasswordEmail:null,
         forgotPasswordOtp: null
     },
     reducers: {
-        loginUser: (state, action) => {
-            state.token = action.payload;
-        },
-
-        logoutUser: (state) => {
-            state.token = null;
-        },
-
         setUserData:(state, action)=>{
             state.userData = action.payload;
+            state.isAuthLoading = false
+        },
+        
+        logoutUser:(state)=>{
+            state.userData = null;
+            state.isAuthLoading = false
         },
 
         setForgotPasswordEmail : (state, action)=>{
@@ -37,14 +35,11 @@ const userSlice = createSlice({
             state.forgotPasswordOtp = null;
         },
 
-        // setUpdatedUserData:(state, action)=>{
-        //     state.userData = action.payload;
-        // }
     }
 
 })
 
-export const { loginUser, logoutUser, setUserData ,setForgotPasswordEmail, clearForgotPasswordEmail , setForgotPasswordOtp , clearForgotPasswordOtp , setUpdatedUserData} = userSlice.actions;
+export const {  setUserData, logoutUser ,setForgotPasswordEmail, clearForgotPasswordEmail , setForgotPasswordOtp , clearForgotPasswordOtp} = userSlice.actions;
 export default userSlice.reducer;
 
 
