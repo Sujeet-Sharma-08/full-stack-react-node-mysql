@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaRegUser } from "react-icons/fa6";
 import { useSelector, useDispatch } from 'react-redux';
-import apiConnector from '../api/apiConnector';
+import apiConnector from '../api/ApiConnector';
 import { toast } from 'react-toastify';
 
 const ProfilePage = () => {
@@ -47,8 +47,7 @@ const ProfilePage = () => {
 
                 const res = await apiConnector.put(
                     "/user/update-profile",
-                    { name, email, mobile },
-                    { withCredentials: true }
+                    { name, email, mobile }
                 );
 
                 // dispatch(setUpdatedUserData(res.data));

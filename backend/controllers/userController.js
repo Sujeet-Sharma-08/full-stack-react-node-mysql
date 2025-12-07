@@ -5,7 +5,7 @@ import {
   getAllUsersService,
   deleteUserByIdService,
   findUserByIdService,
-  getCurrentUSerService
+  getCurrentUserService
 } from "../services/userService.js";
 
 
@@ -66,6 +66,7 @@ export const refreshAccessToken = (req, res) => {
       httpOnly: true,
       secure: false,
       sameSite: "Strict",
+      path: "/",
     });
 
     res.json({ success: true });
@@ -83,12 +84,14 @@ export const logoutUser = (req, res) => {
     httpOnly: true,
     secure: false,
     sameSite: "Strict",
+    path: "/",
   });
 
   res.clearCookie("accessToken", {
     httpOnly: true,
     secure: false,
     sameSite: "Strict",
+    path: "/",
   });
 
   return res.status(200).json({
@@ -153,7 +156,7 @@ export const getCurrentUserController = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const result = await getCurrentUSerService(userId); // ✅ FIXED
+    const result = await getCurrentUserService(userId); // ✅ FIXED
 
     res.status(200).json({
       success: true,

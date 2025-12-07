@@ -2,6 +2,7 @@ import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 
 const ProtectedRoute = ({ children }) => {
+  
   const { userData, isAuthLoading } = useSelector((state) => state.user);
 
   // ✅ WAIT FOR BACKEND AUTH CHECK

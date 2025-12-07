@@ -4,19 +4,19 @@ import { useState } from "react";
 import { HiArrowLongRight } from "react-icons/hi2";
 import { FaRegUser } from "react-icons/fa6";
 import { IoLogOutOutline } from "react-icons/io5";
-import apiConnector from "../api/apiConnector";
+import apiConnector from "../api/ApiConnector.jsx";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import {logoutUser} from '../redux/slices/userSlice.js'
+import { logoutUser } from '../redux/slices/userSlice.js'
 
 
 const Navbar = () => {
 
   const user = useSelector((state) => state.user.userData);
   console.log("user from navbar", user)
-  const dispatch  = useDispatch();
+  const dispatch = useDispatch();
 
   const [visible, setVisible] = useState(false);
   const navigate = useNavigate();
@@ -24,19 +24,16 @@ const Navbar = () => {
   function handleProfile() {
     setVisible(!visible);
   }
-
   const handleLogout = async () => {
     try {
-      const response = await apiConnector.post('/user/logout', {},  { withCredentials: true });
-      console.log("dta from logout", response)
-      toast.success(response.data.message)
+      await apiConnector.post("/user/logout");
+      setVisible(false)
       dispatch(logoutUser());
-      setVisible(false);
-      navigate('/')
+      navigate("/login");
     } catch (error) {
-      toast.error(error.response.data.message || "Logout Failed!")
+      console.error("Logout failed", error);
     }
-  }
+  };
 
   return (
     <div>
@@ -75,7 +72,7 @@ const Navbar = () => {
 
 
           <div className="flex gap-10">
-            { !user &&
+            {!user &&
               <Link
                 to="/login"
                 className="group flex items-center justify-center gap-2 h-10 w-32 rounded-3xl bg-amber-300 text-black font-semibold transition-all duration-300 px-4"

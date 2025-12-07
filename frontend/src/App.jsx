@@ -16,7 +16,7 @@ import ResetPassword from './pages/ResetPassword'
 import { useDispatch } from 'react-redux'
 import { setUserData } from './redux/slices/userSlice.js'
 import { useEffect } from 'react'
-import apiConnector from './api/apiConnector.jsx'
+import apiConnector from './api/ApiConnector.jsx'
 
 
 function App() {
@@ -26,17 +26,16 @@ function App() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await apiConnector.get("/user/me", {
-          withCredentials: true
-        });
+        const res = await apiConnector.get("/user/me",{}, {withCredentials:true});
+        console.log("hello from app.jsx", res)
         dispatch(setUserData(res.data.user));
       } catch (error) {
-        dispatch(setUserData(null));
+        dispatch(setUserData());
       }
     };
 
     fetchUser();
-  }, [dispatch]);
+  }, []);
 
   return (
     <div>
@@ -64,7 +63,7 @@ function App() {
         } />
 
 
-        <Route path='/forgot-password' element={ <ForgetPassword />}/>
+        <Route path='/forgot-password' element={<ForgetPassword />} />
 
         <Route path='/verify-otp' element={<VerifyOtp />} />
 

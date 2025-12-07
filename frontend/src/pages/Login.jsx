@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import apiConnector from "../api/apiConnector.jsx"
+import apiConnector from "../api/ApiConnector.jsx"
 import { toast } from "react-toastify";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
@@ -43,11 +43,9 @@ const Login = () => {
       const response = await apiConnector.post("/user/login", {
         email,
         password,
-      },
-        { withCredentials: true });
+      }
+      );
 
-        console.log("printing res from logged in", response)
-      
       dispatch(setUserData(response.data.user))
       toast.success(response.data.message)
       setFormData({

@@ -2,6 +2,7 @@ import connection from "../config/db.js";
 import { queries } from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import { generateAccessToken, generateRefreshToken } from "../utils/tokenization.js";
+import jwt from 'jsonwebtoken';
 
 // Register user
 export const createUserService = async ({ name, email, mobile, password }) => {
@@ -47,6 +48,8 @@ export const loginUserService = async ({ email, password }) => {
 
   const accessToken = generateAccessToken(user)
   const refreshToken = generateRefreshToken(user);
+
+  
 
   return { accessToken, user, refreshToken };
 };
@@ -101,7 +104,7 @@ export const deleteUserByIdService = async (id) => {
 };
 
 
-export const getCurrentUSerService = async (id) => {
+export const getCurrentUserService = async (id) => {
 
   const [rows] = await connection.execute(queries.findById, [id]);
   if (rows.length === 0) {

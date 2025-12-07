@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
-import apiConnector from '../api/apiConnector';
+import apiConnector from '../api/ApiConnector';
 import { toast } from 'react-toastify';
 
 const Contact = () => {

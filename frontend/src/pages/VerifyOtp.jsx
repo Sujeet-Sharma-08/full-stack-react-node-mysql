@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import apiConnector from "../api/apiConnector";
+import apiConnector from "../api/ApiConnector.jsx";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";

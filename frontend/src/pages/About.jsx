@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import apiConnector from '../api/apiConnector';
+import apiConnector from '../api/ApiConnector';
 import { toast } from 'react-toastify';
 
 
@@ -52,8 +52,7 @@ const About = () => {
     try {
       const { name, idea } = ideaData;
       const response = await apiConnector.post('/idea/create-idea',
-        { name, idea },
-        { withCredentials: true }
+        { name, idea }
       );
       toast.success(response.data.message);
       setIdeaData({ name: "", idea: "" });
