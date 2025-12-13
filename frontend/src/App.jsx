@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useNavigate } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import Contact from './pages/Contact'
@@ -14,33 +14,47 @@ import ForgetPassword from './pages/ForgetPassword'
 import VerifyOtp from './pages/VerifyOtp'
 import ResetPassword from './pages/ResetPassword'
 import { useDispatch } from 'react-redux'
-import { setUserData } from './redux/slices/userSlice.js'
-import { useEffect } from 'react'
+import { setUserData, logoutUser } from './redux/slices/userSlice.js'
+import { useEffect, useState } from 'react'
 import apiConnector from './api/ApiConnector.jsx'
+import DashBoard from './pages/DashBoard.jsx'
+import Users from './pages/Users.jsx'
+import AllIdeas from './pages/AllIdeas.jsx'
+import Settings from './pages/Settings.jsx'
 
 
 function App() {
-
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await apiConnector.get("/user/me",{}, {withCredentials:true});
-        console.log("hello from app.jsx", res)
+        const res = await apiConnector.get("/user/me");
         dispatch(setUserData(res.data.user));
       } catch (error) {
-        dispatch(setUserData());
+        // Only clear user data if it's an auth error, not a network error
+        if (error.response?.status === 401) {
+          dispatch(logoutUser());
+        } else {
+          // Keep existing user data for network errors
+          console.error("Error fetching user:", error.message);
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchUser();
-  }, []);
+  }, [dispatch]);
+
+  if (loading) {
+    return <div>Loading...</div>; // Add a proper loading component
+  }
 
   return (
     <div>
       <Navbar />
-
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -48,7 +62,7 @@ function App() {
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
 
-        {/* protected route */}
+        {/* protected routes */}
         <Route path='/profile'
           element={
             <ProtectedRoute>
@@ -62,12 +76,17 @@ function App() {
           </ProtectedRoute>
         } />
 
-
+        {/* Forgot passowrd pages */}
         <Route path='/forgot-password' element={<ForgetPassword />} />
-
         <Route path='/verify-otp' element={<VerifyOtp />} />
-
         <Route path='/reset-password' element={<ResetPassword />} />
+
+        {/* Dash borad pages */}
+        <Route path='/dashboard' element={<DashBoard />} >
+          <Route index path='users' element={<Users />} />
+          <Route path='all-ideas' element={<AllIdeas />} />
+          <Route path='settings' element={<Settings />} />
+        </Route>
 
       </Routes>
 

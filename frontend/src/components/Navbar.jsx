@@ -26,7 +26,8 @@ const Navbar = () => {
   }
   const handleLogout = async () => {
     try {
-      await apiConnector.post("/user/logout");
+      const res = await apiConnector.post("/user/logout");
+      toast.success(res.data.message);
       setVisible(false)
       dispatch(logoutUser());
       navigate("/login");
