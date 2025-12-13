@@ -12,7 +12,7 @@ router.delete("/delete/:id", deleteUser);
 router.post("/logout", logoutUser)
 router.get("/me", verifyToken , getCurrentUserController);
 
-router.post('/refresh', refreshAccessToken)
+router.post('/refresh-token', refreshAccessToken)
 
 
 export default router;

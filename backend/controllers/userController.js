@@ -33,13 +33,16 @@ export const login = async (req, res) => {
       httpOnly: true,
       secure: false,
       sameSite: "Strict",
+      path: "/",
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: false,
       sameSite: "Strict",
+      path: "/",
     });
+
 
     return res.status(200).json({
       success: true,
@@ -59,22 +62,30 @@ export const refreshAccessToken = (req, res) => {
   try {
     const refreshToken = req.cookies.refreshToken;
 
+    if (!refreshToken) {
+      throw new Error("No refresh token");
+    }
+
     const newAccessToken = refreshAccessTokenService(refreshToken);
 
-    // ✅ STORE NEW ACCESS TOKEN
     res.cookie("accessToken", newAccessToken, {
       httpOnly: true,
       secure: false,
-      sameSite: "Strict",
+      sameSite: "Strict", // ✅ SAME AS LOGIN
       path: "/",
     });
 
-    res.json({ success: true });
+    return res.status(200).json({ success: true });
 
   } catch (err) {
-    res.status(403).json({ message: err.message });
+    // ✅ CLEAR COOKIES ON FAILURE
+    res.clearCookie("accessToken", { path: "/" });
+    res.clearCookie("refreshToken", { path: "/" });
+
+    return res.status(401).json({ message: "Refresh token expired" });
   }
 };
+
 
 
 
@@ -152,18 +163,37 @@ export const deleteUser = async (req, res) => {
 
 
 // get current user for auto login
+// export const getCurrentUserController = async (req, res) => {
+//   try {
+//     const userId = req.user.id;
+
+//     const result = await getCurrentUserService(userId); // ✅ FIXED
+
+//     res.status(200).json({
+//       success: true,
+//       user: result
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: "Failed to fetch user" });
+//   }
+// };
+
+
 export const getCurrentUserController = async (req, res) => {
   try {
-    const userId = req.user.id;
+    if (!req.user?.id) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
 
-    const result = await getCurrentUserService(userId); // ✅ FIXED
+    const result = await getCurrentUserService(req.user.id);
 
     res.status(200).json({
       success: true,
       user: result
     });
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch user" });
+    return res.status(401).json({ message: "Unauthorized" });
   }
 };
+
 

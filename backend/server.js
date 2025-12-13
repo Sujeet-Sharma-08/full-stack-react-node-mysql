@@ -7,7 +7,7 @@ import ideaRoute from './routes/ideaRoute.js'
 import cookieParser from "cookie-parser";
 import otpRoute from './routes/otpRoute.js'
 import profileRoute from './routes/profileRoute.js'
-import refreshRoute from './routes/persistentRoute.js'
+// import refreshRoute from './routes/persistentRoute.js'
 import cors from "cors";
 
 dotenv.config();
@@ -32,7 +32,7 @@ app.use('/contact', contactRoute)
 app.use('/idea', ideaRoute)
 app.use('/user/v1', otpRoute);
 app.use('/user', profileRoute);
-app.use('/auth', refreshRoute)
+// app.use('/auth', refreshRoute)
 
 
 // Server Start
