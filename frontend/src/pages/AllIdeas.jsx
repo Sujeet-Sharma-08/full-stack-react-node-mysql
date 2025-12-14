@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 import apiConnector from "../api/ApiConnector";
 import { toast } from "react-toastify";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 const AllIdeas = () => {
   const [dataSource, setDataSource] = useState([]);
@@ -36,6 +37,22 @@ const AllIdeas = () => {
     fetchIdeas(currentPage);
   }, [page]);
 
+
+  const handleDeleteIdea = async (id) => {
+    setLoading(true);
+    try {
+      const response = await apiConnector.delete(`/idea/delete-idea/${id}`)
+      toast.success(response.data.message)
+      setLoading(false);
+      fetchIdeas(page)
+
+    } catch (error) {
+      setLoading(false);
+      console.log(error)
+      toast.error(error?.response?.data?.message)
+    }
+  }
+
   const columns = [
     {
       title: "ID",
@@ -53,6 +70,17 @@ const AllIdeas = () => {
       dataIndex: "idea",
       key: "idea",
     },
+
+    {
+      title: "Action",
+      align: "start",
+      render: (_, record) => (
+        <RiDeleteBin6Line
+          className="text-red-600 cursor-pointer text-lg"
+          onClick={() => handleDeleteIdea(record.id)}
+        />
+      ),
+    }
   ];
 
   return (
@@ -81,3 +109,5 @@ const AllIdeas = () => {
 };
 
 export default AllIdeas;
+
+//record is Ant Design’s way of giving you full control over a table row — without you managing row state manually.

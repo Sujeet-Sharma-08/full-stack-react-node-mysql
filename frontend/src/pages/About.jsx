@@ -49,8 +49,23 @@ const About = () => {
 
   const ideaSumitHandler = async (e) => {
     e.preventDefault();
+
+     const { name, idea } = ideaData;
+
+     if(!name || !idea){
+      toast.error("Both feilds are required!")
+      return;
+     }
+     if(name.length > 20){
+      toast.error("Name length can't exceed 20 character!");
+      return;
+     }
+
+     if(idea.length >100){
+      toast.error("Your Idea info can't exceed 100 character!");
+      return;
+     }
     try {
-      const { name, idea } = ideaData;
       const response = await apiConnector.post('/idea/create-idea',
         { name, idea }
       );
@@ -205,6 +220,7 @@ const About = () => {
               <label className="block text-sm font-medium text-slate-700">Name</label>
               <input
                 onChange={changeHandler}
+                required
                 value={ideaData.name}
                 className="mt-2 w-full rounded-md border px-3 py-2 placeholder:text-gray-400"
                 placeholder="Your name"
@@ -212,6 +228,7 @@ const About = () => {
               />
               <label className="block text-sm font-medium text-slate-700 mt-4">Message</label>
               <textarea
+                required
                 onChange={changeHandler}
                 value={ideaData.idea}
                 className="mt-2 w-full rounded-md border px-3 py-2 placeholder:text-gray-400"

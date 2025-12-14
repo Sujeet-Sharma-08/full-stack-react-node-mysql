@@ -15,6 +15,7 @@ const Contact = () => {
 
     try {
       const { fullname, email, message} = formData;
+
       const response =  await apiConnector.post('/contact/createContact',
         {fullname, email, message},
         {withCredentials : true}
@@ -73,7 +74,7 @@ const Contact = () => {
         </div>
 
         {/* Right Side - Contact Form */}
-        <div className="bg-white shadow-xl rounded-2xl p-8 md:p-10 border border-slate-100">
+        <div className="bg-white shadow-xl rounded-2xl p-8 md:p-10 mt-10 border border-slate-100">
           <h2 className="text-2xl font-bold text-slate-800 mb-6">Send a Message</h2>
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
