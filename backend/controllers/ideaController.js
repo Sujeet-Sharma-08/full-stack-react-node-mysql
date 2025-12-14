@@ -1,64 +1,84 @@
-import { createIdeaService, getAllIdeaService } from "../services/ideaService.js";
+import { createIdeaService, deleteIdeaService, getAllIdeaService } from "../services/ideaService.js";
 import connection from "../config/db.js";
 
-export const createIdeaController = async(req, res)=>{
+export const createIdeaController = async (req, res) => {
 
     try {
         const result = await createIdeaService(req.body);
         return res.status(201).json({
             success: true,
-            message:"Idea sent successfully!",
-            data : result
+            message: "Idea sent successfully!",
+            data: result
         })
-        
+
     } catch (error) {
         res.status(500).json({
-            success:false,
+            success: false,
             error: error.message
-        }) 
+        })
     }
 }
 
 
 // getting all ideas
 export const getAllIdeaController = async (req, res) => {
-  try {
-    // 1️⃣ Read query params (always strings → convert to number)
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 10;
-    const offset = (page - 1) * limit;
+    try {
+        // 1️⃣ Read query params (always strings → convert to number)
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 10;
+        const offset = (page - 1) * limit;
 
-    // 2️⃣ Get paginated data
-    const [ideas] = await connection.execute(
-      `
+        // 2️⃣ Get paginated data
+        const [ideas] = await connection.execute(
+            `
       SELECT *
       FROM idea
       ORDER BY id DESC
       LIMIT ${limit} OFFSET ${offset}
       `
-    );
+        );
 
-    // 3️⃣ Get total count
-    const [[countResult]] = await connection.execute(
-      `SELECT COUNT(*) AS total FROM idea`
-    );
+        // 3️⃣ Get total count
+        const [[countResult]] = await connection.execute(
+            `SELECT COUNT(*) AS total FROM idea`
+        );
 
-    // 4️⃣ Send response
-    return res.status(200).json({
-      success: true,
-      message: "Ideas fetched successfully!",
-      data: ideas,
-      pagination: {
-        total: countResult.total,
-        page,
-        limit,
-        totalPages: Math.ceil(countResult.total / limit),
-      },
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+        // 4️⃣ Send response
+        return res.status(200).json({
+            success: true,
+            message: "Ideas fetched successfully!",
+            data: ideas,
+            pagination: {
+                total: countResult.total,
+                page,
+                limit,
+                totalPages: Math.ceil(countResult.total / limit),
+            },
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
 };
+
+
+export const deleteIdeaController = async(req, res) => {
+     
+    const {id} = req.params;
+
+    try {
+        await deleteIdeaService(id);
+        return res.status(200).json({
+            success: true,
+            message: "Idea deleted successfully!",
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "something went wrong!",
+            error: error.message
+        })
+    }
+}

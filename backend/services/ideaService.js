@@ -38,3 +38,16 @@ export const getAllIdeaService = async (page , limit) => {
 };
 
 
+export const deleteIdeaService = async(id)=>{
+
+    const [rows] = await connection.execute(ideaModel.getIdeaById, [id]);
+
+    if(rows.length == 0){
+        throw new Error("No idea found with this id")
+    }
+    await connection.execute(ideaModel.deleteIdeaById, [id]);
+
+    return true;
+}
+
+
