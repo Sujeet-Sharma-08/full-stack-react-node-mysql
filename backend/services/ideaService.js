@@ -14,12 +14,27 @@ export const createIdeaService = async ({ name, idea }) => {
 }
 
 
-export const getAllIdeaService = async () => {
+export const getAllIdeaService = async (page , limit) => {
 
-    const [rows] = await connection.execute(ideaModel.getAllIdeas);
-    if (rows.length === 0) {
-        throw new Error("No ideas found!");
-    }
-    return rows;
-}
+  const offset = (page - 1) * limit;
+
+  getAllIdeas: `SELECT * FROM idea ORDER BY id DESC LIMIT ${limit} OFFSET ${offset}`
+
+  const [rows] = await connection.execute(
+    ideaModel.getAllIdeas,
+    [Number(limit), Number(offset)]
+  );
+
+  const [[countResult]] = await connection.execute(
+    ideaModel.getIdeasCount
+  );
+
+  return {
+    ideas: rows,
+    total: countResult.total,
+    page,
+    limit,
+  };
+};
+
 
