@@ -12,7 +12,7 @@ export function generateAccessToken(user) {
   };
 
   return jwt.sign(payload, process.env.JWT_SECRET_KEY, {
-    expiresIn: '5m',
+    expiresIn: '10s',
   });
 }
 
