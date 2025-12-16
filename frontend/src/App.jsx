@@ -27,8 +27,7 @@ function App() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchUser = async () => {
+  const fetchUser = async () => {
       try {
         const res = await apiConnector.get("/user/me");
         dispatch(setUserData(res.data.user));
@@ -45,12 +44,15 @@ function App() {
       }
     };
 
+  useEffect(() => {
+    
+
     fetchUser();
   }, [dispatch]);
 
-  if (loading) {
-    return <div>Loading...</div>; // Add a proper loading component
-  }
+  // if (loading) {
+  //   return <div>Loading...</div>; 
+  // }
 
   return (
     <div>
